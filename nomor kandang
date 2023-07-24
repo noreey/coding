@@ -1,0 +1,110 @@
+#include <bits/stdc++.h>
+using namespace std;
+#define all(x) (x).begin(),(x).end()
+#define sz(x) (int) (x).size()
+#define ll long long
+#define debug(x) cout << #x << ": " << x << endl
+const int nax = 1e5 + 5;
+const ll inf = 1e17;
+const int tmp = 2e5 + 2;
+#define ii pair<int,int>
+#define f first
+#define s second
+#define gl getline
+#define vi vector<int>
+#define vl vector<ll>
+#define pb push_back
+#define mp make_pair
+#define pob pop_back
+#define rep(x,s,e) for (auto x=(s);x<(e);x++)
+#define dec(x,s,e) for (auto x=(e)-1;x>=(s);x--)
+
+pair <ll, ll> plat[10];
+ll hrg[10], hasil[10];
+
+//sort ascend
+bool asc(pair<ll,ll> p, pair<ll,ll> q) {
+  if (p.s < q.s) return true;
+  else if (p.s == q.s && p.f > q.f) return true;
+  else return false;
+}
+
+int main () {
+  ll n, m;
+  cin >> n;
+
+//cocokin harga sama plat nomor
+  for (ll i=0; i<=n; i++) {
+    cin >> hrg[i];
+    plat[i] = mp(i, hrg[i]);
+  }
+
+  sort(plat, plat+n+1, asc);
+  cin >> m;
+
+  //i = 0
+  if(plat[0].f == 0 && n > 0) {
+    if(plat[1].s <= m) {
+      m -= plat[1].s;
+      hasil[plat[1].f]++;
+      hasil[plat[0].f] = m / plat[0].s;
+      m -= hasil[plat[0].f] * plat[0].s;
+    }
+    else if (plat[0].s <= m) {
+      m -=plat[0].s;
+      hasil[0]++;
+    }
+  } else if (plat[0].f == 0 && plat[0].s <= m) {
+    m -= plat[0].s;
+    hasil[0]++;
+  } else {
+    hasil[plat[0].f] = m / plat[0].s;
+      m -= hasil[plat[0].f] * plat[0].s;
+  }
+
+//cari selisih and see which one bs di add
+  for (ll i = n-1; i >= 0; i--) {
+    if(hasil[i] == 0) continue;
+    for(ll j = n; j>i; j--) {
+      ll k = hrg[j] - hrg[i];
+      ll kk = min(m/k, hasil[i]);
+      m -= kk*k;
+      hasil[j] += kk;
+      hasil[i] -= kk;
+    }
+  }
+
+//brp hrs dibeli
+  ll jumlah = 0;
+  for (ll i =0; i <= n; i++) {
+    jumlah += hasil[i];
+  }
+
+  if (jumlah>0) {
+    vl dpn;
+    vl blkg;
+    ll jumlah_d = 0;
+    //jumlah digit
+
+    for (ll i = n; i >= 0; i--) {
+      for(int j = 0; j < hasil[i] && jumlah_d < 50; j++) {
+        dpn.push_back(i);
+        jumlah_d++;
+      }
+    }
+
+//keluarin hsl yg ada
+    jumlah_d = 0;
+    for (ll i = 0; i<=n; i++) {
+      for(int j = 0; j < hasil[i] && jumlah_d < 50; j++) {
+        blkg.push_back(i);
+        jumlah_d++;
+      }
+    }
+    reverse(blkg.begin(), blkg.end());
+    cout << jumlah << endl;
+    for(auto x: dpn) cout << x; cout << endl;
+    for(auto x: blkg) cout << x; cout << endl;
+  }
+  else cout << 0 ;
+}
