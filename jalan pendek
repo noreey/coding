@@ -1,0 +1,47 @@
+#include<bits/stdc++.h>
+using namespace std;
+typedef pair<int, int> ii;
+
+int row[] = {-1,1,0,0};
+int column[] = {0,0, -1, 1};
+// row columnnya hrs beda the 0 0 -1 1 sm -1 1 0 0
+int r, c, dist[1005][1005], arr[1005][1005];
+ii inr, ou;
+
+int main () {
+  cin >> r >> c;
+  for (int i=1; i<=r; i++) {
+    for (int j=1; j<=c; j++) {
+      cin >> arr[i][j];
+      dist[i][j] = 2e9;
+    }
+  }
+  //next time pake fi and se
+  cin >> inr.first >> inr.second;
+  cin >> ou.first >> ou.second;
+  dist[inr.first][inr.second] = 0;
+  priority_queue<pair<int, ii>, vector<pair <int,ii>>, greater<pair <int,ii>> > pq;
+  pq.push({0, {inr.first, inr.second}});
+  while(!pq.empty()){
+    auto cur = pq.top(); pq.pop();
+    //cari jalan and di pop buat move lg
+    ii idx = cur.second;
+    int cost = cur.first;
+    //cost total jarak
+    for(int i = 0; i < 4; i++){
+      int nx = cur.second.first + row[i];
+      int ny = cur.second.second + column[i];
+      //gerak ke kiri kanan atas bawah
+      if (nx<1 || nx > r || ny < 1 || ny > c) continue;
+      //kl di luar border keluar
+        if(dist[nx][ny] != 2e9 || arr[nx][ny] == -1) continue;
+      int ans = max (cost, arr[nx][ny]);
+      if (ans < dist[nx][ny]) {
+      //cari dist terpendek
+        dist[nx][ny] = ans;
+        pq.push({ans, {nx,ny}});
+      }
+    }
+  }
+  cout << dist[ou.first][ou.second] << endl;
+}
